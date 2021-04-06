@@ -27,15 +27,15 @@ public class Runner {
         PhysicianDb.seed();
         TreatmentDb.seed();
         AppointmentDb.seed(5);
-
+        System.out.println("====Welcome to PSIC booking system====\nTo let us know how we can help you\n");
         init();
 
     }
 
     private static void init() {
 
-        System.out.println("====Welcome to PSIC booking system====\n");
-        System.out.println("To let us know how we can help you, choose an option below\nEnter 0 to exit\nEnter 9 to go back to main menu\nEnter 1 to Search Physician by name\nEnter 2 to look up areas of expertise\nEnter 3 to change appointment");
+        
+        System.out.println("Choose an option below\nEnter 0 to exit\nEnter 9 to go back to main menu\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment");
         int cmd = input.nextInt();
 
         switch (cmd) {
@@ -47,7 +47,7 @@ public class Runner {
                 searchPhysicianByName();
                 break;
             case 2:
-                searchAreaOfExpertise(input);
+                searchAreaOfExpertise();
                 break;
             case 3:
 //                changeAppointment(input);
@@ -60,12 +60,17 @@ public class Runner {
 
     private static void searchPhysicianByName() {
         ArrayList<Physician> phys = PhysicianDb.all();
+        bookAppointmentByPhysicians(phys);
+    }
+
+    private static void bookAppointmentByPhysicians(ArrayList<Physician> phys) {
+
         for (Physician ph : phys) {
             System.out.println(ph);
 
         }
 
-        System.out.println("Enter the physicain ID to select a physician or Enter the physician name tp look up");
+        System.out.println("Enter the physicain ID to select a physician or Enter the physician name t0 look up");
 
         try {
             int num_cmd = input.nextInt();
@@ -75,17 +80,19 @@ public class Runner {
                 searchPhysicianAgain();
 
             } else {
-                ArrayList<Treatment> avTrs = ph.getTreatments();
+                ArrayList<Treatment> avTrs = ph.getTreatments("available");
                 if (avTrs.size() != 0) {
+                    System.out.println("\n:::Available treatments for: "+ ph.getFullName()+":::");
                     for (Treatment _tr : avTrs) {
-                        System.out.println(_tr);
+                        
+                        System.out.println("\n"+_tr);
                     }
 
-                    System.out.println("Enter the Treatment ID to book a appointment");
+                    System.out.println("\nEnter the Treatment ID to book a appointment");
                     int tr_cmd = input.nextInt();
                     Treatment tr = TreatmentDb.findById(tr_cmd);
                     if (tr == null) {
-                        System.out.println("There's no treatment with the specified ID");
+                        System.out.println("\nThere's no treatment with the specified ID");
                         exit();
                     } else {
                         System.out.println("Perfect, Now, we need your info to effect the booking");
@@ -134,8 +141,14 @@ public class Runner {
                     }
 
                 } else {
-                    System.out.println("There's no available treatemnt for " + ph.getFullName());
-                    exit();
+                    System.out.println("There's no available treatemnt for " + ph.getFullName()+"\nEnter 0 to exit\nEnter 1 to try again");
+                    num_cmd = input.nextInt();
+                    if(num_cmd == 1) {
+                        bookAppointmentByPhysicians(phys);
+                    } else {
+                        exit();
+                    }
+                    
                 }
 
             }
@@ -169,9 +182,38 @@ public class Runner {
         }
     }
 
-    private static void searchAreaOfExpertise(Scanner input) {
-        System.out.println("WIP");
-        System.exit(EXIT);
+    private static void searchAreaOfExpertise() {
+        ArrayList<Expertise> exps = ExpertiseDb.all();
+        for (Expertise exp : exps) {
+            System.out.println(exp);
+        }
+
+        System.out.println("Enter an expertise ID to view related physicians");
+
+        int cmd = input.nextInt();
+        if (cmd == EXIT) {
+            exit();
+        }
+
+        Expertise exp = ExpertiseDb.findById(cmd);
+        if (exp == null) {
+            System.out.println("There's no Experise with the sepcified ID\nEnter 1 to try again\nEnter 0 to exit\nEnter 9 to go cak to main menu");
+            cmd = input.nextInt();
+            switch (cmd) {
+                case 9:
+                    init();
+                    break;
+                case 1:
+                    searchAreaOfExpertise();
+                case EXIT:
+                default:
+                    exit();
+            }
+        } else {
+            ArrayList<Physician> phys = PhysicianDb.findByExpertise(exp.getName());
+            bookAppointmentByPhysicians(phys);
+
+        }
     }
 
     private static void changeAppointment(int apId, String newStatus) {
