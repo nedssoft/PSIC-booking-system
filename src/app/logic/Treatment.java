@@ -146,5 +146,40 @@ public class Treatment {
         }
         return match;
     }
-
+    
+    /**
+     * 
+     * @param name the name of the physician
+     * @return 
+     */
+    public static ArrayList<Treatment> findByPhysician(String name){
+      ArrayList<Treatment> trs = TreatmentDb.all();
+      ArrayList<Treatment> matches = new ArrayList<Treatment>();
+      for (Treatment tr: trs) {
+        Physician ph = tr.getPhysician();
+       
+        if(ph != null && ph.getFullName().toLowerCase().equalsIgnoreCase(name)) {
+          matches.add(tr);
+        }
+      }
+      return matches;
+    }
+    
+    /**
+     * 
+     * @param name the name of the physician
+     * @return 
+     */
+    public static ArrayList<Treatment> findByPhysician(int physicianId){
+      ArrayList<Treatment> trs = TreatmentDb.all();
+      ArrayList<Treatment> matches = new ArrayList<Treatment>();
+      for (Treatment tr: trs) {
+        Physician ph = tr.getPhysician();
+       
+        if(ph != null && ph.getId() == physicianId) {
+          matches.add(tr);
+        }
+      }
+      return matches;
+    }
 }
