@@ -93,7 +93,7 @@ public class Runner {
                     int tr_cmd = input.nextInt();
                     if (!col.contains(tr_cmd)) {
                         System.out.println("The ID you entered is not a valid option");
-                       bookAppointmentByPhysicians(phys);
+                        bookAppointmentByPhysicians(phys);
                     }
                     Treatment tr = TreatmentDb.findById(tr_cmd);
                     if (tr == null) {
@@ -127,18 +127,7 @@ public class Runner {
                         System.out.println("Would you like to change the status of your appointment? Enter Y or N");
                         String chApCmd = input.nextLine();
                         if (chApCmd.equalsIgnoreCase("y")) {
-                            System.out.println("Select an action below to apply to your appointment\nEnter 1 --- to Attend\nEnter 2 --- to Cancel ");
-                            int _chApCmd = input.nextInt();
-                            switch (_chApCmd) {
-                                case 1:
-                                    changeAppointment(apId, "attended");
-                                    break;
-                                case 2:
-                                    changeAppointment(apId, "canceled");
-                                    break;
-                                default:
-                                    exit();
-                            }
+                            changeAppointment(apId);
                         } else {
                             exit();
                         }
@@ -221,17 +210,34 @@ public class Runner {
         }
     }
 
-    private static void changeAppointment(int apId, String newStatus) {
+    private static void changeAppointment(int apId) {
         Appointment ap = AppointmentDb.findById(apId);
         if (ap == null) {
             System.out.println("Could not find the specified appointment record");
             exit();
         } else {
-            if (newStatus.equalsIgnoreCase("canceled")) {
-                Treatment tr = ap.getTreatment();
-                tr.setStatus("available");
+            System.out.println("Select an action below to apply to your appointment\nEnter 1 --- to Attend\nEnter 2 --- to Cancel ");
+            int _chApCmd = input.nextInt();
+            switch (_chApCmd) {
+                case 1:
+                    ap.setStatus("attended");
+                    break;
+                case 2:
+                    Treatment tr = ap.getTreatment();
+                    tr.setStatus("available");
+                    ap.setStatus("canceled");
+                    break;
+                case 0:
+                    exit();
+                default:
+                    System.out.println("\nYou have entered an invalid option\nWould you like to try again? Y or N");
+                    String cmd = input.nextLine();
+                    if (cmd.equalsIgnoreCase("y")) {
+                        changeAppointment(apId);
+                    } else {
+                        exit();
+                    }
             }
-            ap.setStatus(newStatus);
 
         }
 
