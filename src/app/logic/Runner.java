@@ -9,6 +9,7 @@ import app.db.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -34,7 +35,6 @@ public class Runner {
 
     private static void init() {
 
-        
         System.out.println("Choose an option below\nEnter 0 to exit\nEnter 9 to go back to main menu\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment");
         int cmd = input.nextInt();
 
@@ -64,7 +64,7 @@ public class Runner {
     }
 
     private static void bookAppointmentByPhysicians(ArrayList<Physician> phys) {
-
+        List<Integer> col = new ArrayList<Integer>();
         for (Physician ph : phys) {
             System.out.println(ph);
 
@@ -74,6 +74,7 @@ public class Runner {
 
         try {
             int num_cmd = input.nextInt();
+            checkExit(num_cmd);
             Physician ph = PhysicianDb.findById(num_cmd);
             if (ph == null) {
                 System.out.println("There is no Physicain with the specified ID");
@@ -82,14 +83,18 @@ public class Runner {
             } else {
                 ArrayList<Treatment> avTrs = ph.getTreatments("available");
                 if (avTrs.size() != 0) {
-                    System.out.println("\n:::Available treatments for: "+ ph.getFullName()+":::");
+                    System.out.println("\n:::Available treatments for: " + ph.getFullName() + ":::");
                     for (Treatment _tr : avTrs) {
-                        
-                        System.out.println("\n"+_tr);
+                        col.add(_tr.getId());
+                        System.out.println("\n" + _tr);
                     }
 
                     System.out.println("\nEnter the Treatment ID to book a appointment");
                     int tr_cmd = input.nextInt();
+                    if (!col.contains(tr_cmd)) {
+                        System.out.println("The ID you entered is not a valid option");
+                       bookAppointmentByPhysicians(phys);
+                    }
                     Treatment tr = TreatmentDb.findById(tr_cmd);
                     if (tr == null) {
                         System.out.println("\nThere's no treatment with the specified ID");
@@ -141,14 +146,14 @@ public class Runner {
                     }
 
                 } else {
-                    System.out.println("There's no available treatemnt for " + ph.getFullName()+"\nEnter 0 to exit\nEnter 1 to try again");
+                    System.out.println("There's no available treatemnt for " + ph.getFullName() + "\nEnter 0 to exit\nEnter 1 to try again");
                     num_cmd = input.nextInt();
-                    if(num_cmd == 1) {
+                    if (num_cmd == 1) {
                         bookAppointmentByPhysicians(phys);
                     } else {
                         exit();
                     }
-                    
+
                 }
 
             }
@@ -239,4 +244,13 @@ public class Runner {
         System.exit(EXIT);
     }
 
+    public static boolean isValidOption(List<Integer> col, int id) {
+        return col.contains(id);
+    }
+
+    public static void checkExit(int cmd) {
+        if (cmd == 0) {
+            exit();
+        }
+    }
 }
