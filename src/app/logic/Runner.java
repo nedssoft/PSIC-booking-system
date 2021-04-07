@@ -50,7 +50,7 @@ public class Runner {
                 searchAreaOfExpertise();
                 break;
             case 3:
-//                changeAppointment(input);
+                changeAppointmentEntry();
                 break;
             case EXIT:
             default:
@@ -212,6 +212,7 @@ public class Runner {
 
     private static void changeAppointment(int apId) {
         Appointment ap = AppointmentDb.findById(apId);
+        boolean changed = false;
         if (ap == null) {
             System.out.println("Could not find the specified appointment record");
             exit();
@@ -221,16 +222,19 @@ public class Runner {
             switch (_chApCmd) {
                 case 1:
                     ap.setStatus("attended");
+                     changed = true;
                     break;
                 case 2:
                     Treatment tr = ap.getTreatment();
                     tr.setStatus("available");
                     ap.setStatus("canceled");
+                    changed = true;
                     break;
                 case 0:
                     exit();
                 default:
                     System.out.println("\nYou have entered an invalid option\nWould you like to try again? Y or N");
+                    input.nextLine();
                     String cmd = input.nextLine();
                     if (cmd.equalsIgnoreCase("y")) {
                         changeAppointment(apId);
@@ -241,7 +245,9 @@ public class Runner {
 
         }
 
-        System.out.println(":::Below is the detail of your updated appointment:::\n" + ap);
+        if(changed) {
+            System.out.println(":::Below is the detail of your updated appointment:::\n" + ap);
+        }
 
     }
 
@@ -257,6 +263,63 @@ public class Runner {
     public static void checkExit(int cmd) {
         if (cmd == 0) {
             exit();
+        }
+    }
+
+    public static void changeAppointmentEntry() {
+        ArrayList<Patient> pas = PatientDb.all();
+        List<Integer> col = new ArrayList<Integer>();
+
+        System.out.println("\n:::: PATIENTS ::::\n");
+        for (Patient pa : pas) {
+            System.out.println(pa);
+        }
+        System.out.println("\nEnter the ID of the patient you want to change appointment for\n");
+        int cmd = input.nextInt();
+        if (cmd == EXIT) {
+            exit();
+        }
+        Patient pa = PatientDb.findById(cmd);
+        if (pa == null) {
+            System.out.println("The patient with the specified ID does not exit\n");
+            changeAppointmentEntry();
+        }
+        ArrayList<Appointment> aps = pa.getAppointments();
+        if (aps.size() == 0) {
+            System.out.println("No appointment found for " + pa.getFullName());
+            exitOrMainMenu();
+        }
+
+        System.out.println("::: Appointments for: " + pa.getFullName() + " :::");
+        for (Appointment ap : aps) {
+            col.add(ap.getId());
+            System.out.println(ap.toString(false));
+        }
+        System.out.println("\nEnter the ID of the appointment to update\n");
+        cmd = input.nextInt();
+        if (cmd == EXIT) {
+            exit();
+        }
+        if (!col.contains(cmd)) {
+            System.out.print("\nYou've entered an invalid option");
+            changeAppointmentEntry();
+        } else {
+            changeAppointment(cmd);
+        }
+
+    }
+
+    public static void exitOrMainMenu() {
+        System.out.println("\nEnter 0 to exit\nEnter 9 to go back to main menu");
+        int cmd = input.nextInt();
+
+        if (cmd == 9) {
+            init();
+        } else if(cmd == EXIT) {
+            exit();
+        } else {
+            System.out.println("You've enetered an invalid option");
+            exitOrMainMenu();
         }
     }
 }
