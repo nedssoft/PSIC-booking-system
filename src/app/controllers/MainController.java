@@ -39,7 +39,7 @@ public class MainController {
 
     private static void init() {
 
-        print("Choose an option below\nEnter 0 to exit\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment\nEnter 4 to view all appointments\nEnter 5 to view a patient's appointments");
+        print("Choose an option below\nEnter 0 to exit\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment\nEnter 4 to view all appointments\nEnter 5 to view a patient's appointments\nEnter 6 to create a patient");
         int cmd = input.nextInt();
 
         switch (cmd) {
@@ -62,6 +62,9 @@ public class MainController {
             case 5:
                 listPatientAppointment();
                 break;
+            case 6:
+                newPatientEntry();
+                break;
             case EXIT:
             default:
                 exit();
@@ -72,6 +75,8 @@ public class MainController {
         ArrayList<Physician> phys = PhysicianModel.all();
         bookAppointmentByPhysicians(phys);
     }
+
+
 
     private static void bookAppointmentByPhysicians(ArrayList<Physician> phys) {
         List<Integer> col = new ArrayList<Integer>();
@@ -110,35 +115,27 @@ public class MainController {
                         print("\nThere's no treatment with the specified ID");
                         exit();
                     } else {
-                        print("Perfect, Now, we need your info to effect the booking");
-                        String fn = "";
-                        String adr = "";
-                        String tel = "";
-
-                        print("Enter your full name");
-                        do {
-                            fn = input.nextLine();
-                        } while (fn.isEmpty());
-                        do {
-                            print("Enter your Address");
-                            adr = input.nextLine();
-                        } while (adr.isEmpty());
-                        do {
-                            print("Enter your telephone number");
-                            tel = input.nextLine();
-                        } while (tel.isEmpty());
-                        int id = PatientModel.all().size() + 1;
-                        Patient newPa = Patient.create(id, fn, adr, tel);
-                        int apId = AppointmentModel.all().size() + 1;
-                        int trId = tr.getId();
-                        Appointment newAp = Appointment.create(apId, tr.getId(), id);
+                        print("Perfect, Now, we need your info to effect the booking\nEnter 1 to select an existing patient\nEnter 2 to create a new  patient\n");
+                        Appointment newAp = null;
+                        cmd = input.nextInt();
+                        switch (cmd) {
+                            case 1:
+                                newAp = bookByExistingPatient(tr.getId());
+                                break;
+                            case 2:
+                                newAp = bookByNewPatient(tr.getId());
+                                break;
+                            default:
+                                 exitOrMainMenu();
+                                
+                        }
                         print("\n::::Congratulation, booking successful::::\n::::Below is the details of your new booking::::\n");
 
                         print(newAp.toString());
                         print("Would you like to change the status of your appointment? Enter Y or N");
                         String str_cmd = input.nextLine();
                         if (str_cmd.equalsIgnoreCase("y")) {
-                            changeAppointment(apId);
+                            changeAppointment(newAp.getId());
                         } else {
                             exitOrMainMenu();
                         }
@@ -163,6 +160,37 @@ public class MainController {
             searchPhysicianAgain();
         }
 
+    }
+
+    public static Appointment bookByNewPatient(int trId) {
+        Patient newPa = createNewPatient();
+        int apId = AppointmentModel.all().size() + 1;
+        Appointment newAp = Appointment.create(apId, trId, newPa.getId());
+        return newAp;
+    }
+
+    public static Appointment bookByExistingPatient(int trId) {
+        Appointment newAp = null;
+        ArrayList<Patient> pas = PatientModel.all();
+        for (Patient pa : pas) {
+            print(pa.toString(), true);
+        }
+        print("\nEnter the ID of the patient to create an appointment\n");
+        int cmd = input.nextInt();
+        Patient pa = PatientModel.findById(cmd);
+        if (pa == null) {
+            print("The patient with the specified ID does not exist\nWould you like to try again? Y or N");
+            String str_cmd = input.nextLine();
+            if (str_cmd.equalsIgnoreCase("y")) {
+                bookByExistingPatient(trId);
+            } else {
+                exitOrMainMenu();
+            }
+        } else {
+            int apId = AppointmentModel.all().size() + 1;
+            newAp = Appointment.create(apId, trId, pa.getId());
+        }
+        return newAp;
     }
 
     private static void searchPhysicianAgain() {
@@ -220,6 +248,7 @@ public class MainController {
 
         }
     }
+
 
     private static void changeAppointment(int apId) {
         Appointment ap = AppointmentModel.findById(apId);
@@ -373,4 +402,54 @@ public class MainController {
         }
         exitOrMainMenu();
     }
+
+    public static Patient createNewPatient() {
+        String fn = "";
+        String adr = "";
+        String tel = "";
+
+        print("Enter your full name");
+        do {
+            fn = input.nextLine();
+        } while (fn.isEmpty());
+        do {
+            print("Enter your Address");
+            adr = input.nextLine();
+        } while (adr.isEmpty());
+        do {
+            print("Enter your telephone number");
+            tel = input.nextLine();
+        } while (tel.isEmpty());
+        int id = PatientModel.all().size() + 1;
+        Patient newPa = Patient.create(id, fn, adr, tel);
+
+        return newPa;
+    }
+
+    public static void newPatientEntry() {
+        try {
+            Patient pa = createNewPatient();
+            print("Patient created successfully\n" + pa.toString() + "\n");
+            print("--------------------------------------");
+            print("\nWhat would like to do?\n1 -- Book appointment by area of expertise\n2 -- Book appointment by Physician");
+            int cmd = input.nextInt();
+            switch (cmd) {
+                case 1:
+                    searchAreaOfExpertise();
+                    break;
+                case 2:
+                    searchPhysicianByName();
+                    break;
+                default:
+                    exitOrMainMenu();
+            }
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
+        }
+
+    }
+
 }
