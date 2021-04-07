@@ -39,7 +39,7 @@ public class MainController {
 
     private static void init() {
 
-        print("Choose an option below\nEnter 0 to exit\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment");
+        print("Choose an option below\nEnter 0 to exit\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment\nEnter 4 to view all appointments\nEnter 5 to view a patient's appointments");
         int cmd = input.nextInt();
 
         switch (cmd) {
@@ -55,6 +55,9 @@ public class MainController {
                 break;
             case 3:
                 changeAppointmentEntry();
+                break;
+            case 4:
+                listAllAppointments();
                 break;
             case EXIT:
             default:
@@ -108,7 +111,7 @@ public class MainController {
                         String fn = "";
                         String adr = "";
                         String tel = "";
-                        
+
                         print("Enter your full name");
                         do {
                             fn = input.nextLine();
@@ -134,7 +137,7 @@ public class MainController {
                         if (chApCmd.equalsIgnoreCase("y")) {
                             changeAppointment(apId);
                         } else {
-                            exit();
+                            exitOrMainMenu();
                         }
 
                     }
@@ -145,7 +148,7 @@ public class MainController {
                     if (num_cmd == 1) {
                         bookAppointmentByPhysicians(phys);
                     } else {
-                        exit();
+                        exitOrMainMenu();
                     }
 
                 }
@@ -176,7 +179,7 @@ public class MainController {
             }
         } catch (InputMismatchException e) {
             print("Oops, you have entered an invalid command twice");
-            exit();
+            exitOrMainMenu();
 
         }
     }
@@ -191,7 +194,7 @@ public class MainController {
 
         int cmd = input.nextInt();
         if (cmd == EXIT) {
-            exit();
+            exitOrMainMenu();
         }
 
         Expertise exp = ExpertiseModel.findById(cmd);
@@ -206,7 +209,7 @@ public class MainController {
                     searchAreaOfExpertise();
                 case EXIT:
                 default:
-                    exit();
+                    exitOrMainMenu();
             }
         } else {
             ArrayList<Physician> phys = PhysicianModel.findByExpertise(exp.getName());
@@ -253,6 +256,7 @@ public class MainController {
         if (changed) {
             print(":::Below is the detail of your updated appointment:::\n" + ap);
         }
+        exitOrMainMenu();
 
     }
 
@@ -282,7 +286,7 @@ public class MainController {
         print("\nEnter the ID of the patient you want to change appointment for\n");
         int cmd = input.nextInt();
         if (cmd == EXIT) {
-            exit();
+           exitOrMainMenu();
         }
         Patient pa = PatientModel.findById(cmd);
         if (pa == null) {
@@ -303,7 +307,7 @@ public class MainController {
         print("\nEnter the ID of the appointment to update\n");
         cmd = input.nextInt();
         if (cmd == EXIT) {
-            exit();
+           exitOrMainMenu();
         }
         if (!col.contains(cmd)) {
             System.out.print("\nYou've entered an invalid option");
@@ -331,5 +335,21 @@ public class MainController {
     public static void print(String value) {
         System.out.println(value);
     }
-    
+
+    public static void listPatientAppointment(Patient pa) {
+        ArrayList<Appointment> aps = pa.getAppointments();
+        print(":::" + pa.getFullName() + "'s appointments\n");
+        for (Appointment ap : aps) {
+            print(ap.toString());
+        }
+    }
+
+    public static void listAllAppointments() {
+        ArrayList<Appointment> aps = AppointmentModel.all();
+        print("::: All appointments\n");
+        for (Appointment ap : aps) {
+            print(ap.toString()+"\n");
+        }
+       exitOrMainMenu();
+    }
 }
