@@ -32,7 +32,7 @@ public class MainController {
         PhysicianModel.seed();
         TreatmentModel.seed();
         AppointmentModel.seed(5);
-        print("====Welcome to PSIC booking system====\nTo let us know how we can help you\n");
+        print(":::Welcome to PSIC booking system:::\nTo let us know how we can help you\n");
         init();
 
     }
@@ -58,6 +58,9 @@ public class MainController {
                 break;
             case 4:
                 listAllAppointments();
+                break;
+            case 5:
+                listPatientAppointment();
                 break;
             case EXIT:
             default:
@@ -281,12 +284,12 @@ public class MainController {
 
         print("\n:::: PATIENTS ::::\n");
         for (Patient pa : pas) {
-            print(pa.toString());
+            print(pa.toString(), true);
         }
         print("\nEnter the ID of the patient you want to change appointment for\n");
         int cmd = input.nextInt();
         if (cmd == EXIT) {
-           exitOrMainMenu();
+            exitOrMainMenu();
         }
         Patient pa = PatientModel.findById(cmd);
         if (pa == null) {
@@ -302,12 +305,12 @@ public class MainController {
         print("::: Appointments for: " + pa.getFullName() + " :::");
         for (Appointment ap : aps) {
             col.add(ap.getId());
-            print(ap.toString(false));
+            print(ap.toString(false), true);
         }
         print("\nEnter the ID of the appointment to update\n");
         cmd = input.nextInt();
         if (cmd == EXIT) {
-           exitOrMainMenu();
+            exitOrMainMenu();
         }
         if (!col.contains(cmd)) {
             System.out.print("\nYou've entered an invalid option");
@@ -336,20 +339,38 @@ public class MainController {
         System.out.println(value);
     }
 
-    public static void listPatientAppointment(Patient pa) {
+    public static void print(String value, boolean addLines) {
+        System.out.println("----------------------------------------------");
+        System.out.println(value);
+    }
+
+    public static void listPatientAppointment() {
+
+        ArrayList<Patient> pas = PatientModel.all();
+        for (Patient pa : pas) {
+            print(pa.toString(), true);
+        }
+        print("\nEnter the ID of the patient to view they appointment");
+        int cmd = input.nextInt();
+        Patient pa = PatientModel.findById(cmd);
+        if (pa == null) {
+            print("\nPatient with the specified ID does not exist");
+            exitOrMainMenu();
+        }
         ArrayList<Appointment> aps = pa.getAppointments();
         print(":::" + pa.getFullName() + "'s appointments\n");
         for (Appointment ap : aps) {
-            print(ap.toString());
+            print(ap.toString(), true);
         }
+        exitOrMainMenu();
     }
 
     public static void listAllAppointments() {
         ArrayList<Appointment> aps = AppointmentModel.all();
         print("::: All appointments\n");
         for (Appointment ap : aps) {
-            print(ap.toString()+"\n");
+            print(ap.toString() + "\n", true);
         }
-       exitOrMainMenu();
+        exitOrMainMenu();
     }
 }
