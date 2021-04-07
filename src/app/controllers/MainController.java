@@ -83,9 +83,9 @@ public class MainController {
         print("Enter the physicain ID to select a physician or Enter the physician name to look up");
 
         try {
-            int num_cmd = input.nextInt();
-            checkExit(num_cmd);
-            Physician ph = PhysicianModel.findById(num_cmd);
+            int cmd = input.nextInt();
+            checkExit(cmd);
+            Physician ph = PhysicianModel.findById(cmd);
             if (ph == null) {
                 print("There is no Physicain with the specified ID");
                 searchPhysicianAgain();
@@ -100,12 +100,12 @@ public class MainController {
                     }
 
                     print("\nEnter the Treatment ID to book a appointment");
-                    int tr_cmd = input.nextInt();
-                    if (!col.contains(tr_cmd)) {
+                    cmd = input.nextInt();
+                    if (!col.contains(cmd)) {
                         print("The ID you entered is not a valid option");
                         bookAppointmentByPhysicians(phys);
                     }
-                    Treatment tr = TreatmentModel.findById(tr_cmd);
+                    Treatment tr = TreatmentModel.findById(cmd);
                     if (tr == null) {
                         print("\nThere's no treatment with the specified ID");
                         exit();
@@ -136,8 +136,8 @@ public class MainController {
 
                         print(newAp.toString());
                         print("Would you like to change the status of your appointment? Enter Y or N");
-                        String chApCmd = input.nextLine();
-                        if (chApCmd.equalsIgnoreCase("y")) {
+                        String str_cmd = input.nextLine();
+                        if (str_cmd.equalsIgnoreCase("y")) {
                             changeAppointment(apId);
                         } else {
                             exitOrMainMenu();
@@ -147,8 +147,8 @@ public class MainController {
 
                 } else {
                     print("There's no available treatemnt for " + ph.getFullName() + "\nEnter 0 to exit\nEnter 1 to try again");
-                    num_cmd = input.nextInt();
-                    if (num_cmd == 1) {
+                    cmd = input.nextInt();
+                    if (cmd == 1) {
                         bookAppointmentByPhysicians(phys);
                     } else {
                         exitOrMainMenu();
@@ -169,8 +169,8 @@ public class MainController {
 
         try {
             print("To search again, enter 1\nTo go back to main menu, enter 9\nTo exit, enter 0\n");
-            int _cmd = input.nextInt();
-            switch (_cmd) {
+            int cmd = input.nextInt();
+            switch (cmd) {
                 case 9:
                     init();
                     break;
@@ -229,8 +229,8 @@ public class MainController {
             exit();
         } else {
             print("Select an action below to apply to your appointment\nEnter 1 --- to Attend\nEnter 2 --- to Cancel ");
-            int _chApCmd = input.nextInt();
-            switch (_chApCmd) {
+            int cmd = input.nextInt();
+            switch (cmd) {
                 case 1:
                     ap.setStatus("attended");
                     changed = true;
@@ -246,8 +246,8 @@ public class MainController {
                 default:
                     print("\nYou have entered an invalid option\nWould you like to try again? Y or N");
                     input.nextLine();
-                    String cmd = input.nextLine();
-                    if (cmd.equalsIgnoreCase("y")) {
+                    String str_cmd = input.nextLine();
+                    if (str_cmd.equalsIgnoreCase("y")) {
                         changeAppointment(apId);
                     } else {
                         exit();
