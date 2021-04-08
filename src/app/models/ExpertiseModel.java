@@ -5,7 +5,7 @@
  */
 package app.models;
 
-import app.controllers.ExpertiseController;
+import app.controllers.Expertise;
 import java.util.ArrayList;
 
 /**
@@ -14,16 +14,16 @@ import java.util.ArrayList;
  */
 public class ExpertiseModel {
 
-    private static ArrayList<ExpertiseController> db = new ArrayList<ExpertiseController>();
+    private static ArrayList<Expertise> db = new ArrayList<Expertise>();
 
-    public static void save(ExpertiseController exp) {
+    public static void save(Expertise exp) {
         db.add(exp);
     }
 
-    public static ExpertiseController findById(int id) {
-        ExpertiseController expertise = null;
+    public static Expertise findById(int id) {
+        Expertise expertise = null;
         for (int i = 0; i < db.size(); i++) {
-            ExpertiseController p = db.get(i);
+            Expertise p = db.get(i);
             if (p.getId() == id) {
                 expertise = p;
             }
@@ -31,7 +31,7 @@ public class ExpertiseModel {
         return expertise;
     }
 
-    public static ArrayList<ExpertiseController> all() {
+    public static ArrayList<Expertise> all() {
         if(db.size() == 0) {
           seed();
         }
@@ -42,7 +42,7 @@ public class ExpertiseModel {
     public static boolean remove(int id) {
         boolean removed = false;
         for (int i = 0; i < db.size(); i++) {
-            ExpertiseController p = db.get(i);
+            Expertise p = db.get(i);
             if (p.getId() == id) {
                 db.remove(i);
                 removed = true;
@@ -55,7 +55,7 @@ public class ExpertiseModel {
         String[] exps = {"Physiotherapy", "Osteopathy", "Rehabilitation"};
         for (int i = 1; i <= exps.length; i++) {
             int id = i;
-            ExpertiseController.create(id, exps[i - 1]);
+            Expertise.create(id, exps[i - 1]);
         }
     }
 

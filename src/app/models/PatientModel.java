@@ -5,7 +5,7 @@
  */
 package app.models;
 
-import app.controllers.PatientController;
+import app.controllers.Patient;
 import java.util.ArrayList;
 
 /**
@@ -14,17 +14,17 @@ import java.util.ArrayList;
  */
 public class PatientModel {
 
-    private static ArrayList<PatientController> db = new ArrayList<PatientController>();
+    private static ArrayList<Patient> db = new ArrayList<Patient>();
 
-    public static PatientController save(PatientController patient) {
+    public static Patient save(Patient patient) {
         db.add(patient);
         return patient;
     }
 
-    public static PatientController findById(int id) {
-        PatientController patient = null;
+    public static Patient findById(int id) {
+        Patient patient = null;
         for (int i = 0; i < db.size(); i++) {
-            PatientController p = db.get(i);
+            Patient p = db.get(i);
             if (p.getId() == id) {
                 patient = p;
             }
@@ -32,14 +32,14 @@ public class PatientModel {
         return patient;
     }
 
-    public static ArrayList<PatientController> all() {
+    public static ArrayList<Patient> all() {
         return db;
     }
 
     public static boolean remove(int id) {
         boolean removed = false;
         for (int i = 0; i < db.size(); i++) {
-            PatientController p = db.get(i);
+            Patient p = db.get(i);
             if (p.getId() == id) {
                 db.remove(i);
                 removed = true;
@@ -55,7 +55,7 @@ public class PatientModel {
             String fn = "Patient-" + id;
             String adr = id + " Wonderland, Mars";
             String tel = "070000000" + id;
-            PatientController.create(id, fn, adr, tel);
+            Patient.create(id, fn, adr, tel);
         }
     }
 }

@@ -5,9 +5,9 @@
  */
 package app.models;
 
-import app.controllers.AppointmentController;
-import app.controllers.PatientController;
-import app.controllers.TreatmentController;
+import app.controllers.Appointment;
+import app.controllers.Patient;
+import app.controllers.Treatment;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -21,16 +21,16 @@ import java.util.Date;
  */
 public class AppointmentModel {
 
-    private static ArrayList<AppointmentController> db = new ArrayList<AppointmentController>();
+    private static ArrayList<Appointment> db = new ArrayList<Appointment>();
 
-    public static void save(AppointmentController exp) {
+    public static void save(Appointment exp) {
         db.add(exp);
     }
 
-    public static AppointmentController findById(int id) {
-        AppointmentController ap = null;
+    public static Appointment findById(int id) {
+        Appointment ap = null;
         for (int i = 0; i < db.size(); i++) {
-            AppointmentController p = db.get(i);
+            Appointment p = db.get(i);
             if (p.getId() == id) {
                 ap = p;
             }
@@ -38,7 +38,7 @@ public class AppointmentModel {
         return ap;
     }
 
-    public static ArrayList<AppointmentController> all() {
+    public static ArrayList<Appointment> all() {
         if (db.size() == 0) {
             seed(5);
         }
@@ -49,7 +49,7 @@ public class AppointmentModel {
     public static boolean remove(int id) {
         boolean removed = false;
         for (int i = 0; i < db.size(); i++) {
-            AppointmentController p = db.get(i);
+            Appointment p = db.get(i);
             if (p.getId() == id) {
                 db.remove(i);
                 removed = true;
@@ -59,12 +59,12 @@ public class AppointmentModel {
     }
 
     public static void seed(int num) {
-        ArrayList<TreatmentController> trs = TreatmentModel.all();
-        ArrayList<PatientController> pas = PatientModel.all();
+        ArrayList<Treatment> trs = TreatmentModel.all();
+        ArrayList<Patient> pas = PatientModel.all();
         int totalAps = db.size();
         for (int i = 0; i < num; i++) {
-            TreatmentController tr = trs.get(i);
-            PatientController pa = pas.get(i);
+            Treatment tr = trs.get(i);
+            Patient pa = pas.get(i);
             int id = i + 1;
             String status = "booked";
             int patientId = pa.getId();
@@ -81,7 +81,7 @@ public class AppointmentModel {
             LocalDateTime dateObj = LocalDateTime.now();
             DateTimeFormatter dateFormatObj = DateTimeFormatter.ofPattern("E, MMM dd yyyy HH:mm:ss");
             String bookedDate = dateObj.format(dateFormatObj);
-            AppointmentController ap = AppointmentController.create(id, treatmentId, patientId);
+            Appointment ap = Appointment.create(id, treatmentId, patientId);
 //            System.out.println("Ap " +ap);
             tr.setStatus(status);
             
