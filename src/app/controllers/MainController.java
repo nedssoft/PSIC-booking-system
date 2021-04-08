@@ -40,34 +40,41 @@ public class MainController {
     private static void init() {
 
         print("Choose an option below\nEnter 0 to exit\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment\nEnter 4 to view all appointments\nEnter 5 to view a patient's appointments\nEnter 6 to create a patient");
-        int cmd = input.nextInt();
 
-        switch (cmd) {
+        try {
+            int cmd = input.nextInt();
+            switch (cmd) {
 
-            case 9:
-                init();
-                break;
-            case 1:
-                searchPhysicianByName();
-                break;
-            case 2:
-                searchAreaOfExpertise();
-                break;
-            case 3:
-                changeAppointmentEntry();
-                break;
-            case 4:
-                listAllAppointments();
-                break;
-            case 5:
-                listPatientAppointment();
-                break;
-            case 6:
-                newPatientEntry();
-                break;
-            case EXIT:
-            default:
-                exit();
+                case 9:
+                    init();
+                    break;
+                case 1:
+                    searchPhysicianByName();
+                    break;
+                case 2:
+                    searchAreaOfExpertise();
+                    break;
+                case 3:
+                    changeAppointmentEntry();
+                    break;
+                case 4:
+                    listAllAppointments();
+                    break;
+                case 5:
+                    listPatientAppointment();
+                    break;
+                case 6:
+                    newPatientEntry();
+                    break;
+                case EXIT:
+                default:
+                    exit();
+            }
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
         }
     }
 
@@ -75,8 +82,6 @@ public class MainController {
         ArrayList<Physician> phys = PhysicianModel.all();
         bookAppointmentByPhysicians(phys);
     }
-
-
 
     private static void bookAppointmentByPhysicians(ArrayList<Physician> phys) {
         List<Integer> col = new ArrayList<Integer>();
@@ -126,8 +131,8 @@ public class MainController {
                                 newAp = bookByNewPatient(tr.getId());
                                 break;
                             default:
-                                 exitOrMainMenu();
-                                
+                                exitOrMainMenu();
+
                         }
                         print("\n::::Congratulation, booking successful::::\n::::Below is the details of your new booking::::\n");
 
@@ -171,24 +176,32 @@ public class MainController {
 
     public static Appointment bookByExistingPatient(int trId) {
         Appointment newAp = null;
-        ArrayList<Patient> pas = PatientModel.all();
-        for (Patient pa : pas) {
-            print(pa.toString(), true);
-        }
-        print("\nEnter the ID of the patient to create an appointment\n");
-        int cmd = input.nextInt();
-        Patient pa = PatientModel.findById(cmd);
-        if (pa == null) {
-            print("The patient with the specified ID does not exist\nWould you like to try again? Y or N");
-            String str_cmd = input.nextLine();
-            if (str_cmd.equalsIgnoreCase("y")) {
-                bookByExistingPatient(trId);
-            } else {
-                exitOrMainMenu();
+        try {
+            ArrayList<Patient> pas = PatientModel.all();
+            for (Patient pa : pas) {
+                print(pa.toString(), true);
             }
-        } else {
-            int apId = AppointmentModel.all().size() + 1;
-            newAp = Appointment.create(apId, trId, pa.getId());
+            print("\nEnter the ID of the patient to create an appointment\n");
+            int cmd = input.nextInt();
+            Patient pa = PatientModel.findById(cmd);
+            if (pa == null) {
+                print("The patient with the specified ID does not exist\nWould you like to try again? Y or N");
+                String str_cmd = input.nextLine();
+                if (str_cmd.equalsIgnoreCase("y")) {
+                    bookByExistingPatient(trId);
+                } else {
+                    exitOrMainMenu();
+                }
+            } else {
+                int apId = AppointmentModel.all().size() + 1;
+                newAp = Appointment.create(apId, trId, pa.getId());
+            }
+
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
         }
         return newAp;
     }
@@ -209,7 +222,8 @@ public class MainController {
                     exit();
             }
         } catch (InputMismatchException e) {
-            print("Oops, you have entered an invalid command twice");
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
             exitOrMainMenu();
 
         }
@@ -222,41 +236,80 @@ public class MainController {
         }
 
         print("Enter an expertise ID to view related physicians");
-
-        int cmd = input.nextInt();
-        if (cmd == EXIT) {
-            exitOrMainMenu();
-        }
-
-        Expertise exp = ExpertiseModel.findById(cmd);
-        if (exp == null) {
-            print("There's no Experise with the sepcified ID\nEnter 1 to try again\nEnter 0 to exit\nEnter 9 to go cak to main menu");
-            cmd = input.nextInt();
-            switch (cmd) {
-                case 9:
-                    init();
-                    break;
-                case 1:
-                    searchAreaOfExpertise();
-                case EXIT:
-                default:
-                    exitOrMainMenu();
+        try {
+            int cmd = input.nextInt();
+            if (cmd == EXIT) {
+                exitOrMainMenu();
             }
-        } else {
-            ArrayList<Physician> phys = PhysicianModel.findByExpertise(exp.getName());
-            bookAppointmentByPhysicians(phys);
+
+            Expertise exp = ExpertiseModel.findById(cmd);
+            if (exp == null) {
+                print("There's no Experise with the sepcified ID\nEnter 1 to try again\nEnter 0 to exit\nEnter 9 to go cak to main menu");
+                cmd = input.nextInt();
+                switch (cmd) {
+                    case 9:
+                        init();
+                        break;
+                    case 1:
+                        searchAreaOfExpertise();
+                    case EXIT:
+                    default:
+                        exitOrMainMenu();
+                }
+            } else {
+                ArrayList<Physician> phys = PhysicianModel.findByExpertise(exp.getName());
+                bookAppointmentByPhysicians(phys);
+
+            }
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
 
         }
     }
 
-
     private static void changeAppointment(int apId) {
         Appointment ap = AppointmentModel.findById(apId);
         boolean changed = false;
-        if (ap == null) {
-            print("Could not find the specified appointment record");
-            exit();
-        } else {
+        try {
+            if (ap == null) {
+                print("Could not find the specified appointment record");
+                exit();
+            } else {
+                print("Select an action below:\n1 -- update appoint status\n2 -- change appointment treatment");
+                int cmd = input.nextInt();
+                switch (cmd) {
+                    case 1:
+                        changed = updateAppointStatus(ap);
+                        break;
+                    case 2:
+                        changed = changeApTreatment(ap);
+                        break;
+                    default:
+                        exitOrMainMenu();
+                }
+
+            }
+
+            if (changed) {
+                print(":::Below is the detail of your updated appointment:::\n" + ap);
+            } else {
+                print("Appointment could not be changed\n");
+            }
+            exitOrMainMenu();
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
+        }
+
+    }
+
+    public static boolean updateAppointStatus(Appointment ap) {
+        boolean changed = false;
+        try {
             print("Select an action below to apply to your appointment\nEnter 1 --- to Attend\nEnter 2 --- to Cancel ");
             int cmd = input.nextInt();
             switch (cmd) {
@@ -271,25 +324,60 @@ public class MainController {
                     changed = true;
                     break;
                 case 0:
-                    exit();
+                    exitOrMainMenu();
                 default:
                     print("\nYou have entered an invalid option\nWould you like to try again? Y or N");
                     input.nextLine();
                     String str_cmd = input.nextLine();
                     if (str_cmd.equalsIgnoreCase("y")) {
-                        changeAppointment(apId);
+                        updateAppointStatus(ap);
                     } else {
-                        exit();
+                        exitOrMainMenu();
                     }
             }
-
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
         }
+        return changed;
 
-        if (changed) {
-            print(":::Below is the detail of your updated appointment:::\n" + ap);
+    }
+
+    public static boolean changeApTreatment(Appointment ap) {
+        boolean changed = false;
+        if (ap.getStatus().equalsIgnoreCase("canceled")) {
+            print("You cannot change the treatment for a canceled appointment");
+            return changed;
         }
-        exitOrMainMenu();
-
+        try {
+            ArrayList<Treatment> trs = TreatmentModel.all("available");
+            if (trs.size() == 0) {
+                print("There's no available treatment by any physician at the moment\n");
+                exitOrMainMenu();
+            } else {
+                List<Integer> col = new ArrayList<Integer>();
+                print(":::Available treatments\n");
+                for (Treatment tr : trs) {
+                    col.add(tr.getId());
+                    print(tr.toString(), true);
+                }
+                print("Enter the ID of the new treatment to update");
+                int cmd = input.nextInt();
+                if (!col.contains(cmd)) {
+                    print("You have entered an invalid option");
+                    exitOrMainMenu();
+                } else {
+                    ap.setTreatmentId(cmd);
+                    changed = true;
+                }
+            }
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+        }
+        return changed;
     }
 
     public static void exit() {
@@ -316,51 +404,65 @@ public class MainController {
             print(pa.toString(), true);
         }
         print("\nEnter the ID of the patient you want to change appointment for\n");
-        int cmd = input.nextInt();
-        if (cmd == EXIT) {
-            exitOrMainMenu();
-        }
-        Patient pa = PatientModel.findById(cmd);
-        if (pa == null) {
-            print("The patient with the specified ID does not exit\n");
-            changeAppointmentEntry();
-        }
-        ArrayList<Appointment> aps = pa.getAppointments();
-        if (aps.size() == 0) {
-            print("No appointment found for " + pa.getFullName());
-            exitOrMainMenu();
-        }
+        try {
+            int cmd = input.nextInt();
+            if (cmd == EXIT) {
+                exitOrMainMenu();
+            }
+            Patient pa = PatientModel.findById(cmd);
+            if (pa == null) {
+                print("The patient with the specified ID does not exit\n");
+                changeAppointmentEntry();
+            }
+            ArrayList<Appointment> aps = pa.getAppointments();
+            if (aps.size() == 0) {
+                print("No appointment found for " + pa.getFullName());
+                exitOrMainMenu();
+            }
 
-        print("::: Appointments for: " + pa.getFullName() + " :::");
-        for (Appointment ap : aps) {
-            col.add(ap.getId());
-            print(ap.toString(false), true);
-        }
-        print("\nEnter the ID of the appointment to update\n");
-        cmd = input.nextInt();
-        if (cmd == EXIT) {
+            print("::: Appointments for: " + pa.getFullName() + " :::");
+            for (Appointment ap : aps) {
+                col.add(ap.getId());
+                print(ap.toString(false), true);
+            }
+            print("\nEnter the ID of the appointment to update\n");
+            cmd = input.nextInt();
+            if (cmd == EXIT) {
+                exitOrMainMenu();
+            }
+            if (!col.contains(cmd)) {
+                System.out.print("\nYou've entered an invalid option");
+                changeAppointmentEntry();
+            } else {
+                changeAppointment(cmd);
+            }
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
             exitOrMainMenu();
-        }
-        if (!col.contains(cmd)) {
-            System.out.print("\nYou've entered an invalid option");
-            changeAppointmentEntry();
-        } else {
-            changeAppointment(cmd);
+
         }
 
     }
 
     public static void exitOrMainMenu() {
         print("\nEnter 0 to exit\nEnter 9 to go back to main menu");
-        int cmd = input.nextInt();
+        try {
+            int cmd = input.nextInt();
 
-        if (cmd == 9) {
-            init();
-        } else if (cmd == EXIT) {
+            if (cmd == 9) {
+                init();
+            } else if (cmd == EXIT) {
+                exit();
+            } else {
+                print("You've enetered an invalid option");
+                exitOrMainMenu();
+            }
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
             exit();
-        } else {
-            print("You've enetered an invalid option");
-            exitOrMainMenu();
+
         }
     }
 
@@ -379,19 +481,26 @@ public class MainController {
         for (Patient pa : pas) {
             print(pa.toString(), true);
         }
-        print("\nEnter the ID of the patient to view they appointment");
-        int cmd = input.nextInt();
-        Patient pa = PatientModel.findById(cmd);
-        if (pa == null) {
-            print("\nPatient with the specified ID does not exist");
+        try {
+            print("\nEnter the ID of the patient to view they appointment");
+            int cmd = input.nextInt();
+            Patient pa = PatientModel.findById(cmd);
+            if (pa == null) {
+                print("\nPatient with the specified ID does not exist");
+                exitOrMainMenu();
+            }
+            ArrayList<Appointment> aps = pa.getAppointments();
+            print(":::" + pa.getFullName() + "'s appointments\n");
+            for (Appointment ap : aps) {
+                print(ap.toString(), true);
+            }
             exitOrMainMenu();
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
         }
-        ArrayList<Appointment> aps = pa.getAppointments();
-        print(":::" + pa.getFullName() + "'s appointments\n");
-        for (Appointment ap : aps) {
-            print(ap.toString(), true);
-        }
-        exitOrMainMenu();
     }
 
     public static void listAllAppointments() {
