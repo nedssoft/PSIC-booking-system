@@ -8,12 +8,7 @@ package app.models;
 import app.controllers.Appointment;
 import app.controllers.Patient;
 import app.controllers.Treatment;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  *
@@ -40,11 +35,10 @@ public class AppointmentModel {
 
     public static ArrayList<Appointment> all() {
         if (db.size() == 0) {
-            seed(5);
+            seed();
         }
         return db;
     }
-
 
     public static boolean remove(int id) {
         boolean removed = false;
@@ -58,35 +52,12 @@ public class AppointmentModel {
         return removed;
     }
 
-    public static void seed(int num) {
-        ArrayList<Treatment> trs = TreatmentModel.all();
-        ArrayList<Patient> pas = PatientModel.all();
-        int totalAps = db.size();
-        for (int i = 0; i < num; i++) {
-            Treatment tr = trs.get(i);
-            Patient pa = pas.get(i);
-            int id = i + 1;
-            String status = "booked";
-            int patientId = pa.getId();
-            int treatmentId = tr.getId();
-//            System.out.println("treatment ID: "+treatmentId);
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date date = new Date();
-//            String bookedDate = dateFormat.format(date);  
-
-            LocalDateTime myDateObj = LocalDateTime.now();
-            DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("E, MMM dd yyyy HH:mm:ss");
-//            String bookedDate = myDateObj.format(myFormatObj);
-            
-            LocalDateTime dateObj = LocalDateTime.now();
-            DateTimeFormatter dateFormatObj = DateTimeFormatter.ofPattern("E, MMM dd yyyy HH:mm:ss");
-            String bookedDate = dateObj.format(dateFormatObj);
-            Appointment ap = Appointment.create(id, treatmentId, patientId);
-//            System.out.println("Ap " +ap);
-            tr.setStatus(status);
-            
-
-        }
+    public static void seed() {
+        Appointment.create(1, 1, 1);
+        Appointment.create(2, 3, 4);
+        Appointment.create(3, 5, 2);
+        Appointment.create(4, 7, 8);
+        Appointment.create(5, 6, 10);
     }
 
 }
