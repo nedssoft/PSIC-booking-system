@@ -34,7 +34,9 @@ public class PhysicianModel {
     }
 
     public static ArrayList<Physician> all() {
-        seed();
+        if (db.size() == 0) {
+            seed();
+        }
         return db;
     }
 

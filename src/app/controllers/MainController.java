@@ -6,6 +6,7 @@
 package app.controllers;
 
 import app.models.AppointmentModel;
+import app.models.ConsultationModel;
 import app.models.ExpertiseModel;
 import app.models.PatientModel;
 import app.models.TreatmentModel;
@@ -28,10 +29,11 @@ public class MainController {
 
     public static void main(String[] args) {
 
-        PatientModel.seed(10);
+        PatientModel.seed();
         PhysicianModel.seed();
         TreatmentModel.seed();
-        AppointmentModel.seed(5);
+        AppointmentModel.seed();
+        ConsultationModel.seed();
         print(":::Welcome to PSIC booking system:::\nTo let us know how we can help you\n");
         init();
 
@@ -39,7 +41,7 @@ public class MainController {
 
     private static void init() {
 
-        print("Choose an option below\nEnter 0 to exit\nEnter 1 to look up Physicians\nEnter 2 to look up physicians' areas of expertise\nEnter 3 to change appointment\nEnter 4 to view all appointments\nEnter 5 to view a patient's appointments\nEnter 6 to create a patient");
+        print("Choose an option below\n0 -- To exit\n1 -- To ook up Physicians by name\n2 -- To look up physicians' areas of expertise\n3 -- To change appointment\n4 -- To view all appointments\n5 -- To view a patient's appointments\n6 -- To create a patient\n7 -- To book consultation");
 
         try {
             int cmd = input.nextInt();
@@ -65,6 +67,9 @@ public class MainController {
                     break;
                 case 6:
                     newPatientEntry();
+                    break;
+                case 7:
+                    bookConsultation();
                     break;
                 case EXIT:
                 default:
@@ -490,9 +495,14 @@ public class MainController {
                 exitOrMainMenu();
             }
             ArrayList<Appointment> aps = pa.getAppointments();
-            print(":::" + pa.getFullName() + "'s appointments\n");
-            for (Appointment ap : aps) {
-                print(ap.toString(), true);
+
+            if (aps.size() > 0) {
+                print(":::" + pa.getFullName() + "'s appointments\n");
+                for (Appointment ap : aps) {
+                    print(ap.toString(), true);
+                }
+            } else {
+                print("There's no appointment for: " + pa.getFullName());
             }
             exitOrMainMenu();
         } catch (InputMismatchException e) {
@@ -509,6 +519,13 @@ public class MainController {
         for (Appointment ap : aps) {
             print(ap.toString() + "\n", true);
         }
+
+        ArrayList<Consultation> cs = ConsultationModel.all();
+        print(":::Visitors Consultations", true);
+        for (Consultation c : cs) {
+            print(c.toString(), true);
+        }
+
         exitOrMainMenu();
     }
 
@@ -559,6 +576,131 @@ public class MainController {
 
         }
 
+    }
+
+    public static void bookConsultation() {
+        print("\nWhat would like to do?\n1 -- Book Consultation by area of expertise\n2 -- Book consultation by Physician");
+        int cmd = input.nextInt();
+        switch (cmd) {
+            case 1:
+                bookConsultationByExpertise();
+                break;
+            case 2:
+                bookConsultationByPhysician();
+                break;
+            default:
+                exitOrMainMenu();
+        }
+    }
+
+    public static void bookConsultationByPhysician() {
+        List<Integer> col = new ArrayList<Integer>();
+        ArrayList<Physician> phys = PhysicianModel.all();
+        for (Physician ph : phys) {
+            if (!ph.isFullyBooked()) {
+                col.add(ph.getId());
+                print(ph.toString());
+            }
+        }
+        try {
+            print("Enter the ID of the physician to book consultation");
+            int cmd = input.nextInt();
+            if (!isValidOption(col, cmd)) {
+                print("You've selected an invalid option");
+                exitOrMainMenu();
+            }
+
+            print("\nEnter your name: ");
+            String name = "";
+            do {
+                name = input.nextLine();
+            } while (name.isEmpty());
+
+            int id = ConsultationModel.all().size() + 1;
+            Consultation c = Consultation.create(id, cmd, name);
+            print("\n:::Consultation successully booked:::\n" + c.toString());
+            exitOrMainMenu();
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
+        }
+
+    }
+
+    public static void bookConsultationByPhysician(ArrayList<Physician> phys) {
+
+        List<Integer> col = new ArrayList<Integer>();
+        for (Physician ph : phys) {
+
+            col.add(ph.getId());
+            print(ph.toString());
+
+        }
+        try {
+            print("Enter the ID of the physician to book consultation");
+            int cmd = input.nextInt();
+            if (!isValidOption(col, cmd)) {
+                print("You've selected an invalid option");
+                exitOrMainMenu();
+            }
+
+            print("\nEnter your name: ");
+            String name = "";
+            do {
+                name = input.nextLine();
+            } while (name.isEmpty());
+
+            int id = ConsultationModel.all().size() + 1;
+            Consultation c = Consultation.create(id, cmd, name);
+            print("\n:::Consultation successully booked:::\n" + c.toString());
+            exitOrMainMenu();
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
+        }
+
+    }
+
+    public static void bookConsultationByExpertise() {
+        ArrayList<Expertise> exps = ExpertiseModel.all();
+        List<Integer> col = new ArrayList<Integer>();
+        for (Expertise exp : exps) {
+            col.add(exp.getId());
+            print(exp.toString());
+        }
+
+        print("Enter an expertise ID to view related physicians");
+        try {
+            int cmd = input.nextInt();
+            if (cmd == EXIT) {
+                exitOrMainMenu();
+            }
+            if (!isValidOption(col, cmd)) {
+                print("You've entered an invalid option");
+                exitOrMainMenu();
+            }
+            Expertise exp = ExpertiseModel.findById(cmd);
+
+            ArrayList<Physician> phys = PhysicianModel.findByExpertise(exp.getName());
+ 
+            ArrayList<Physician> avPhys = new ArrayList<Physician>();
+            for (Physician p : phys) {
+                if (!p.isFullyBooked()) {
+                    avPhys.add(p);
+                }
+            }
+            bookConsultationByPhysician(avPhys);
+
+        } catch (InputMismatchException e) {
+            input.nextLine();
+            print("Oops, you have entered an invalid command");
+            exitOrMainMenu();
+
+        }
     }
 
 }
