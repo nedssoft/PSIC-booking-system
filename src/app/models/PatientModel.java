@@ -33,6 +33,9 @@ public class PatientModel {
     }
 
     public static ArrayList<Patient> all() {
+        if (db.size() == 0) {
+            seed();
+        }
         return db;
     }
 
@@ -48,12 +51,24 @@ public class PatientModel {
         return removed;
     }
 
-    public static void seed(int num) {
+    public static void seed() {
+        String[] names = {
+            "Maddie Dailey",
+            "Vere MacCafferky",
+            "Sarina Makeswell",
+            "Gilbertine Peckham",
+            "Dierdre Hodcroft",
+            "Reagen Proschek",
+            "Marigold Truse",
+            "Dudley Cazereau",
+            "Arlina Lippingwell",
+            "Crissy Chartman"
+        };
         int totalPatients = db.size();
-        for (int i = 1; i <= num; i++) {
+        for (int i = 1; i <= names.length; i++) {
             int id = totalPatients + i;
-            String fn = "Patient-" + id;
-            String adr = id + " Wonderland, Mars";
+            String fn = names[i-1];
+            String adr = id + fn +" Ave. Wonderland, Mars";
             String tel = "070000000" + id;
             Patient.create(id, fn, adr, tel);
         }

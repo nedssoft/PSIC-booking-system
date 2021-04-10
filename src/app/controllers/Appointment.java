@@ -19,7 +19,6 @@ public class Appointment {
 
     private int id, treatmentId, patientId;
     private String status, bookedDate;
-
     public Appointment(int id, int treatmentId, int patientId) {
         this.id = id;
         this.treatmentId = treatmentId;
@@ -129,7 +128,7 @@ public class Appointment {
         Physician ph = tr.getPhysician();
         return ":::Treatment Name: "+tr.getName()
                 + "\n:::Booked By:"
-                + "Name: " + pa.getFullName()
+                + "\nName: " + pa.getFullName()
                 + "\nTelephone: " + pa.getTelephone()
                 + "\nAddress: " + pa.getAddress()
                 + "\n:::To By Attended to By (Physician): "
