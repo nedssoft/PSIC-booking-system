@@ -95,14 +95,14 @@ public class Controller {
 
         }
 
-        print("Enter the physicain ID to select a physician or Enter the physician name to look up");
+        print("Enter the physicain ID to select a physician");
 
         try {
             int cmd = input.nextInt();
             checkExit(cmd);
             Physician ph = PhysicianModel.findById(cmd);
             if (ph == null) {
-                print("There is no Physicain with the specified ID");
+                print("There is no Physician with the specified ID");
                 searchPhysicianAgain();
 
             } else {
@@ -125,7 +125,7 @@ public class Controller {
                         print("\nThere's no treatment with the specified ID");
                         exit();
                     } else {
-                        print("Perfect, Now, we need your info to effect the booking\nEnter 1 to select an existing patient\nEnter 2 to create a new  patient\n");
+                        print("Perfect, Now, we need your info to effect the booking\nEnter 1 -- to select an existing patient\nEnter 2 -- To create a new  patient\n");
                         Appointment newAp = null;
                         cmd = input.nextInt();
                         switch (cmd) {
@@ -141,8 +141,9 @@ public class Controller {
                         }
                         print("\n::::Congratulation, booking successful::::\n::::Below is the details of your new booking::::\n");
 
-                        print(newAp.toString());
+                        print(newAp.toString()+"\n", true);
                         print("Would you like to change the status of your appointment? Enter Y or N");
+                        input.nextLine();
                         String str_cmd = input.nextLine();
                         if (str_cmd.equalsIgnoreCase("y")) {
                             changeAppointment(newAp.getId());
@@ -153,7 +154,7 @@ public class Controller {
                     }
 
                 } else {
-                    print("There's no available treatemnt for " + ph.getFullName() + "\nEnter 0 to exit\nEnter 1 to try again");
+                    print("There's no available treatemnt for " + ph.getFullName() + "\nEnter 0 -- To exit\nEnter 1  -- To try again");
                     cmd = input.nextInt();
                     if (cmd == 1) {
                         bookAppointmentByPhysicians(phys);
@@ -214,7 +215,7 @@ public class Controller {
     private static void searchPhysicianAgain() {
 
         try {
-            print("To search again, enter 1\nTo go back to main menu, enter 9\nTo exit, enter 0\n");
+            print("1 -- Try again\n2 -- Go back to main menu\n0 -- Exit\n");
             int cmd = input.nextInt();
             switch (cmd) {
                 case 9:
@@ -249,7 +250,7 @@ public class Controller {
 
             Expertise exp = ExpertiseModel.findById(cmd);
             if (exp == null) {
-                print("There's no Experise with the sepcified ID\nEnter 1 to try again\nEnter 0 to exit\nEnter 9 to go cak to main menu");
+                print("There's no Experise with the sepcified ID\nEnter 1 -- To try again\nEnter 0 -- Exit\n Enter 9 -- Go back to main menu");
                 cmd = input.nextInt();
                 switch (cmd) {
                     case 9:
@@ -282,13 +283,22 @@ public class Controller {
                 print("Could not find the specified appointment record");
                 exit();
             } else {
-                print("Select an action below:\n1 -- update appoint status\n2 -- change appointment treatment");
+
+                print("Select an action below:\n1 -- Update appointment status\n2 -- Change appointment treatment");
                 int cmd = input.nextInt();
                 switch (cmd) {
                     case 1:
+                         if(ap.getStatus().equalsIgnoreCase("attended")){
+                             print("You cannot change the status of an appointment that has been attended to\n");
+                             break;
+                         }
                         changed = updateAppointStatus(ap);
                         break;
                     case 2:
+                        if(ap.getStatus().equalsIgnoreCase("attended") || ap.getStatus().equalsIgnoreCase("canceled")){
+                             print("You cannot change the the treatment of a canceled or attended appointment\n");
+                             break;
+                         }
                         changed = changeApTreatment(ap);
                         break;
                     default:
@@ -557,7 +567,7 @@ public class Controller {
             Patient pa = createNewPatient();
             print("Patient created successfully\n" + pa.toString() + "\n");
             print("--------------------------------------");
-            print("\nWhat would like to do?\n1 -- Book appointment by area of expertise\n2 -- Book appointment by Physician");
+            print("\nWhat would you like to do?\n1 -- Book appointment by area of expertise\n2 -- Book appointment by Physician");
             int cmd = input.nextInt();
             switch (cmd) {
                 case 1:
@@ -579,7 +589,7 @@ public class Controller {
     }
 
     public static void bookConsultation() {
-        print("\nWhat would like to do?\n1 -- Book Consultation by area of expertise\n2 -- Book consultation by Physician");
+        print("\nWhat would you like to do?\n1 -- Book Consultation by area of expertise\n2 -- Book consultation by Physician");
         int cmd = input.nextInt();
         switch (cmd) {
             case 1:
