@@ -64,13 +64,12 @@ public class PatientModel {
             "Arlina Lippingwell",
             "Crissy Chartman"
         };
-        int totalPatients = db.size();
+
         for (int i = 1; i <= names.length; i++) {
-            int id = totalPatients + i;
             String fn = names[i-1];
-            String adr = id + fn +" Ave. Wonderland, Mars";
-            String tel = "070000000" + id;
-            Patient.create(id, fn, adr, tel);
+            String adr = (i + 1) + fn +" Ave. Wonderland, Mars";
+            String tel = "070000000" + (i+1);
+            Patient.create(fn, adr, tel);
         }
     }
 }

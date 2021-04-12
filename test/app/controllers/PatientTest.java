@@ -23,11 +23,10 @@ public class PatientTest {
     
     @BeforeClass
     public static void setUpClass() {
-        int id = 1;
         String fn = "Jon Doe";
         String adr = "22 Mongo park Place";
         String tel = "099876543";
-        instance = Patient.create(id, fn, adr, tel);
+        instance = Patient.create(fn, adr, tel);
     }
     
     @AfterClass

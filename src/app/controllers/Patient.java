@@ -14,13 +14,14 @@ import java.util.ArrayList;
  * @author nedsoft
  */
 public class Patient extends Personnel {
-
-    public Patient(int id, String fn, String adr, String tel) {
+    private static int id = 1;
+    public Patient(String fn, String adr, String tel) {
         super(id, fn, adr, tel);
+        id = id + 1;
     }
 
-    public static Patient create(int id, String fn, String adr, String tel) {
-        Patient patient = new Patient(id, fn, adr, tel);
+    public static Patient create(String fn, String adr, String tel) {
+        Patient patient = new Patient(fn, adr, tel);
         PatientModel.save(patient);
         return patient;
     }

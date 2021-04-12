@@ -19,12 +19,14 @@ public class Physician extends Personnel {
     private String[] expertises;
     private int consultationMinutesLeft;
     private String consultationHours;
+    private static int _id = 1;
 
-    public Physician(int id, String fn, String adr, String tel, String[] expertises, String cHour) {
-        super(id, fn, adr, tel);
+    public Physician(String fn, String adr, String tel, String[] expertises, String cHour) {
+        super(_id, fn, adr, tel);
         this.setExpertises(expertises);
         consultationHours = cHour;
         consultationMinutesLeft = 120;
+        _id = _id + 1;
     }
 
     /**
@@ -76,8 +78,8 @@ public class Physician extends Personnel {
         expertises = exps;
     }
 
-    public static Physician create(int id, String fn, String adr, String tel, String[] expertises, String cHour) {
-        Physician physician = new Physician(id, fn, adr, tel, expertises, cHour);
+    public static Physician create(String fn, String adr, String tel, String[] expertises, String cHour) {
+        Physician physician = new Physician(fn, adr, tel, expertises, cHour);
         PhysicianModel.save(physician);
         return physician;
     }

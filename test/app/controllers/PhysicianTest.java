@@ -24,13 +24,12 @@ public class PhysicianTest {
 
     @BeforeClass
     public static void setUpClass() {
-        int id = 1;
         String fn = "Jane Doe";
         String adr = "12 Gunner Road";
         String tel = "4265233276";
         String[] expertises = {"Rehabilitation", "Osteopathy"};
         String cHour = "Monday 1-3pm";
-        ph = Physician.create(id, fn, adr, tel, expertises, cHour);
+        ph = Physician.create(fn, adr, tel, expertises, cHour);
     }
 
     @AfterClass

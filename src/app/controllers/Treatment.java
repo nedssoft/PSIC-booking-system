@@ -17,8 +17,8 @@ public class Treatment {
 
     private int id, physicianId;
     private String name, status, date, room, expertise;
-
-    public Treatment(int id, int physicianId, String name, String status, String date, String room, String expertise) {
+    private static int _id = 1;
+    public Treatment(int physicianId, String name, String status, String date, String room, String expertise) {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -26,10 +26,11 @@ public class Treatment {
         this.room = room;
         this.expertise = expertise;
         this.physicianId = physicianId;
+        _id = _id + 1;
     }
 
-    public static Treatment create(int id, int physicianId, String name, String status, String date, String room, String expertise) {
-        Treatment tr = new Treatment(id, physicianId, name, status, date, room, expertise);
+    public static Treatment create(int physicianId, String name, String status, String date, String room, String expertise) {
+        Treatment tr = new Treatment(physicianId, name, status, date, room, expertise);
         TreatmentModel.save(tr);
         return tr;
     }

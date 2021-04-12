@@ -53,11 +53,11 @@ public class AppointmentModel {
     }
 
     public static void seed() {
-        Appointment.create(1, 1, 1);
-        Appointment.create(2, 3, 4);
-        Appointment.create(3, 5, 2);
-        Appointment.create(4, 7, 8);
-        Appointment.create(5, 6, 10);
+        Appointment.create(1, 1);
+        Appointment.create(3, 4);
+        Appointment.create(5, 2);
+        Appointment.create(7, 8);
+        Appointment.create(6, 10);
     }
 
 }

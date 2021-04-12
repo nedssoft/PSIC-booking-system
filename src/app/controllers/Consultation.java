@@ -16,13 +16,15 @@ public class Consultation {
 
     private int id, physicianId;
     private String note, expertise, period;
+    private static int _id = 1;
 
-    public Consultation(int id, int physicianId, String note, String expertise) {
-        this.id = id;
+    public Consultation(int physicianId, String note, String expertise) {
+        this.id = _id;
         this.physicianId = physicianId;
         this.note = note;
         this.expertise = expertise;
         this.period = this.calculatePeriod();
+        _id = _id +1;
     }
 
     public Consultation(int id, int physicianId, String note) {
@@ -39,8 +41,8 @@ public class Consultation {
         return c;
     }
 
-    public static Consultation create(int id, int physicianId, String note, String expertise) {
-        Consultation c = new Consultation(id, physicianId, note, expertise);
+    public static Consultation create(int physicianId, String note, String expertise) {
+        Consultation c = new Consultation(physicianId, note, expertise);
         ConsultationModel.save(c);
         return c;
     }

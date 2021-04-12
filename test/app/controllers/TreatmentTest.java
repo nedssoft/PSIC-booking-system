@@ -30,7 +30,7 @@ public class TreatmentTest {
         String date = "Saturday 12th May, 12:30";
         String room = "Room A";
         String expertise = "Rehabilitation";
-        instance = Treatment.create(id, physicianId, name, status, date, room, expertise);
+        instance = Treatment.create(physicianId, name, status, date, room, expertise);
     }
     
     @AfterClass
@@ -46,18 +46,6 @@ public class TreatmentTest {
         assertNotNull(instance);
         assertTrue(instance instanceof Treatment);
     }
-
-    /**
-     * Test of getId method, of class Treatment.
-     */
-    @Test
-    public void testGetId() {
-        System.out.println("getId");
-        int expResult = 1;
-        int result = instance.getId();
-        assertEquals(expResult, result);
-    }
-
 
     /**
      * Test of getName method, of class Treatment.

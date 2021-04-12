@@ -39,7 +39,7 @@ public class AppointmentTest {
         int patientId = 1;
         int expResult = id;
         assertNull(instance);
-        instance = Appointment.create(id, treatmentId, patientId);
+        instance = Appointment.create(treatmentId, patientId);
         assertNotNull(instance);
     }
 
@@ -49,7 +49,7 @@ public class AppointmentTest {
     @Test
     public void testGetId() {
         System.out.println("getId");
-        instance = Appointment.create(1,2,3);
+        instance = Appointment.create(2,3);
         int expResult = 1;
         int result = instance.getId();
         assertEquals(expResult, result);
@@ -64,7 +64,7 @@ public class AppointmentTest {
     public void testSetTreatmentId() {
         System.out.println("setTreatmentId");
         int treatmentId = 2;
-        instance = Appointment.create(1,2,3);
+        instance = Appointment.create(2,3);
         instance.setTreatmentId(treatmentId);
         int expResult = 2;
         assertEquals(expResult, instance.getTreatmentId());
@@ -77,7 +77,7 @@ public class AppointmentTest {
     @Test
     public void testGetTreatment() {
         System.out.println("getTreatment");
-        instance = Appointment.create(1,2,3);
+        instance = Appointment.create(2,3);
         Treatment result = instance.getTreatment();
         assertNull(result);
     }

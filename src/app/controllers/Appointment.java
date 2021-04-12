@@ -19,16 +19,18 @@ public class Appointment {
 
     private int id, treatmentId, patientId;
     private String status, bookedDate;
-    public Appointment(int id, int treatmentId, int patientId) {
-        this.id = id;
+    private static int _id = 1;
+    public Appointment(int treatmentId, int patientId) {
+        this.id = _id;
         this.treatmentId = treatmentId;
         this.patientId = patientId;
         this.status = "booked";
         this.bookedDate = getFormattedBookedDate();
+        _id = _id + 1;
     }
 
-    public static Appointment create(int id, int treatmentId, int patientId) {
-        Appointment ap = new Appointment(id, treatmentId, patientId);
+    public static Appointment create(int treatmentId, int patientId) {
+        Appointment ap = new Appointment(treatmentId, patientId);
         AppointmentModel.save(ap);
         return ap;
     }

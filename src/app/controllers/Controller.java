@@ -175,8 +175,8 @@ public class Controller {
 
     public static Appointment bookByNewPatient(int trId) {
         Patient newPa = createNewPatient();
-        int apId = AppointmentModel.all().size() + 1;
-        Appointment newAp = Appointment.create(apId, trId, newPa.getId());
+        
+        Appointment newAp = Appointment.create(trId, newPa.getId());
         return newAp;
     }
 
@@ -199,8 +199,7 @@ public class Controller {
                     exitOrMainMenu();
                 }
             } else {
-                int apId = AppointmentModel.all().size() + 1;
-                newAp = Appointment.create(apId, trId, pa.getId());
+                newAp = Appointment.create(trId, pa.getId());
             }
 
         } catch (InputMismatchException e) {
@@ -556,8 +555,8 @@ public class Controller {
             print("Enter your telephone number");
             tel = input.nextLine();
         } while (tel.isEmpty());
-        int id = PatientModel.all().size() + 1;
-        Patient newPa = Patient.create(id, fn, adr, tel);
+ 
+        Patient newPa = Patient.create(fn, adr, tel);
 
         return newPa;
     }
